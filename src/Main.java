@@ -1,6 +1,4 @@
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
@@ -39,6 +37,25 @@ public class Main {
         }
     }
 
+    private static void showAllNotes() {
+        Connection connection = connect();
+
+        String query = "SELECT * FROM notes";
+
+        try {
+            Statement statement = connection.createStatement();
+            ResultSet rs = statement.executeQuery(query);
+
+            while(rs.next()) {
+                System.out.println("title: " + rs.getString("title") + "\n" +
+                        "content:\n" + rs.getString("content"));
+            }
+
+        } catch(SQLException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
     public static void main(String[] args) {
         initialSetup();
 
@@ -67,7 +84,7 @@ public class Main {
                     System.out.println(1);
                     break;
                 case 2:
-                    System.out.println(2);
+                    showAllNotes();
                     break;
                 case 0:
                     System.out.println("Goodbye");
