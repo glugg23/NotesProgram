@@ -37,6 +37,20 @@ public class Main {
         }
     }
 
+    private static void enterNote() {
+        Scanner in = new Scanner(System.in);
+
+        System.out.print("Enter note title: ");
+        String title = in.nextLine();
+        Note note = new Note(title);
+
+        System.out.print("Enter note content: ");
+        String content = in.nextLine();
+        note.setNote(content);
+
+        note.upload();
+    }
+
     private static void showAllNotes() {
         Connection connection = connect();
 
@@ -81,7 +95,7 @@ public class Main {
 
             switch(result) {
                 case 1:
-                    System.out.println(1);
+                    enterNote();
                     break;
                 case 2:
                     showAllNotes();
@@ -95,5 +109,7 @@ public class Main {
             }
 
         } while(result != 0);
+
+        in.close();
     }
 }
