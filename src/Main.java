@@ -1,7 +1,6 @@
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
@@ -14,6 +13,15 @@ public class Main {
         try {
             connection = DriverManager.getConnection(url);
 
+        } catch(SQLException e) {
+            System.out.println(e.getMessage());
+        }
+
+        return connection;
+    }
+
+    private static void initialSetup() {
+        try(Connection connection = connect()) {
             /*
             Database gets created if it does not already exist.
             So this query just creates the tables we need if the database is being made from scratch.
@@ -24,18 +32,16 @@ public class Main {
                     + " content BLOB\n"
                     + ");";
 
-            Statement statement = connection.createStatement();
-            statement.execute(query);
+            connection.createStatement().execute(query);
 
         } catch(SQLException e) {
             System.out.println(e.getMessage());
         }
-
-        return connection;
     }
 
     public static void main(String[] args) {
-        Connection connection = connect();
+        initialSetup();
+
         Scanner in = new Scanner(System.in);
         int result;
 
