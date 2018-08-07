@@ -1,0 +1,1 @@
+Inside this directory is where any databases will be created.
