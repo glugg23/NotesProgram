@@ -2,6 +2,8 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.InputMismatchException;
+import java.util.Scanner;
 
 public class Main {
 
@@ -34,6 +36,41 @@ public class Main {
 
     public static void main(String[] args) {
         Connection connection = connect();
+        Scanner in = new Scanner(System.in);
+        int result;
 
+        do {
+            System.out.println("Notes Program V0.1\n" +
+                    "Menu\n" +
+                    "\t1 - Enter note\n" +
+                    "\t2 - Show all notes\n" +
+                    "\t0 - Exit\n");
+
+            System.out.print("-> ");
+
+            try {
+                result = in.nextInt();
+
+            } catch(InputMismatchException e) {
+                System.out.println("Invalid option");
+                result = -1;
+            }
+
+            switch(result) {
+                case 1:
+                    System.out.println(1);
+                    break;
+                case 2:
+                    System.out.println(2);
+                    break;
+                case 0:
+                    System.out.println("Goodbye");
+                    break;
+                default:
+                    in.nextLine();
+                    break;
+            }
+
+        } while(result != 0);
     }
 }
