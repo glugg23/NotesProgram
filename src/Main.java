@@ -1,3 +1,7 @@
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.sql.*;
 import java.util.InputMismatchException;
 import java.util.Scanner;
@@ -70,6 +74,42 @@ public class Main {
         }
     }
 
+    private static void saveNote() {
+        Scanner in = new Scanner(System.in);
+
+        System.out.print("Enter note title: ");
+        String title = in.nextLine();
+        Note note = new Note(title);
+
+        String query = "SELECT * FROM notes WHERE title=?";
+        Connection connection = connect();
+
+        try {
+            PreparedStatement pstmnt = connection.prepareStatement(query);
+            pstmnt.setString(1, note.getTitle());
+            ResultSet rs = pstmnt.executeQuery();
+
+            while(rs.next()) {
+                note.setNote(rs.getString("content"));
+            }
+
+        } catch(SQLException e) {
+            System.out.println(e.getMessage());
+        }
+
+        String fileUrl = String.format("./db/%s.txt", note.getTitle());
+
+        Path path = Paths.get(fileUrl);
+
+        try {
+            Files.createFile(path);
+            Files.write(path, note.getNote().getBytes());
+
+        } catch(IOException e) {
+            System.out.println("ERROR: File already exists");
+        }
+    }
+
     public static void main(String[] args) {
         initialSetup();
 
@@ -81,6 +121,7 @@ public class Main {
                     "Menu\n" +
                     "\t1 - Enter note\n" +
                     "\t2 - Show all notes\n" +
+                    "\t3 - Save note to file\n" +
                     "\t0 - Exit\n");
 
             System.out.print("-> ");
@@ -99,6 +140,9 @@ public class Main {
                     break;
                 case 2:
                     showAllNotes();
+                    break;
+                case 3:
+                    saveNote();
                     break;
                 case 0:
                     System.out.println("Goodbye");
