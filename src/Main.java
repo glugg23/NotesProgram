@@ -29,10 +29,11 @@ public class Main {
             So this query just creates the tables we need if the database is being made from scratch.
              */
             String query = "CREATE TABLE IF NOT EXISTS notes (\n"
-                    + " id INTEGER UNIQUE PRIMARY KEY AUTOINCREMENT,\n"
+                    + " id INTEGER PRIMARY KEY,\n"
                     + " title TEXT NOT NULL,\n"
                     + " content BLOB\n"
-                    + ");";
+                    + ");\n"
+                    + "CREATE INDEX notes_title_index ON notes(title);";
 
             connection.createStatement().execute(query);
 
