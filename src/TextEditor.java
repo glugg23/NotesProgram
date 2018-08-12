@@ -4,6 +4,7 @@ import java.util.Scanner;
 public class TextEditor {
     private boolean writeMode = false;
     private ArrayList<String> buffer;
+    private String errorMessage;
 
     public TextEditor() {
         this.buffer = new ArrayList<>();
@@ -21,47 +22,61 @@ public class TextEditor {
         Scanner in = new Scanner(System.in);
         Note note = new Note(title);
 
-        String choice;
+        String command;
 
         do {
-            //Check whether we are in write mode
-            if(this.writeMode) {
-                //Read in next line
-                choice = in.nextLine();
+            System.out.print("-> ");
+            command = in.nextLine();
 
-                //If it's a dot stop being in write mode
-                if(choice.equals(".")) {
-                    this.writeMode = false;
-
-                //Otherwise write line to buffer
-                } else {
-                    this.buffer.add(choice);
-                }
-
-            //If we're not in write mode
-            } else {
-                System.out.print("-> ");
-                choice = in.nextLine();
-
-                //Get new command
-                switch(choice) {
-                    case "i":
-                        this.writeMode = true;
-                        break;
-                    case "w":
-                        writeToNote(note);
-                        break;
-                    case "q":
-                        break;
-                    default:
-                        System.out.println("?");
-                        break;
-                }
+            //Get first char for command
+            switch(command.charAt(0)) {
+                case 'i':
+                    i(command);
+                    break;
+                case 'w':
+                    writeToNote(note);
+                    break;
+                case 'q':
+                    break;
+                default:
+                    this.errorMessage = "Unknown command";
+                    System.out.println("?");
+                    break;
             }
 
-        } while(!choice.equals("q"));
+        } while(!command.equals("q"));
 
         return note;
+    }
+
+    /**
+     * Takes in input from the user and writes it to the buffer
+     *
+     * @param command The rest of the command for error checking
+     */
+    private void i(String command) {
+        //Check to make sure there isn't anymore to the command
+        if(command.length() > 1) {
+            this.errorMessage = "Unknown command";
+            return;
+        }
+
+        this.writeMode = true;
+        Scanner in = new Scanner(System.in);
+        String line;
+
+        while(this.writeMode) {
+            line = in.nextLine();
+
+            //End write mode if a single . is entered
+            if(line.equals(".")) {
+                this.writeMode = false;
+
+            //Otherwise write line to buffer
+            } else {
+                this.buffer.add(line);
+            }
+        }
     }
 
     /**
