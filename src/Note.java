@@ -86,11 +86,24 @@ public class Note {
     }
 
     /**
-     * Checks equality through matching titles
-     *
-     * @param o Any object
-     * @return boolean Stating equality
+     * Updates a note that exists in the database with this note
      */
+    public void update() {
+        String query = "UPDATE notes SET content=? WHERE title=?";
+
+        try {
+            Connection connection = this.connect();
+            PreparedStatement pstmnt = connection.prepareStatement(query);
+            pstmnt.setString(1, this.note);
+            pstmnt.setString(2, this.title);
+
+            pstmnt.execute();
+
+        } catch(SQLException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
     @Override
     public boolean equals(Object o) {
         if(this == o) return true;

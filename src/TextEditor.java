@@ -94,7 +94,7 @@ public class TextEditor {
                     note.appendNote(line + "\n");
                 }
 
-                //note.update();
+                note.update();
             }
 
         //Otherwise check the command and see if it is valid
