@@ -6,7 +6,7 @@ import java.sql.SQLException;
 public class Note {
     private String title;
     //Might make this an ArrayList of Strings
-    private String note;
+    private String note = "";
 
     /**
      * Allows creation of note with only a title

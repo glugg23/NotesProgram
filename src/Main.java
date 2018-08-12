@@ -46,12 +46,9 @@ public class Main {
 
         System.out.print("Enter note title: ");
         String title = in.nextLine();
-        Note note = new Note(title);
 
-        System.out.print("Enter note content: ");
-        String content = in.nextLine();
-        note.setNote(content);
-
+        TextEditor ed = new TextEditor();
+        Note note = ed.use(title);
         note.upload();
     }
 
