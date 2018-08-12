@@ -3,11 +3,10 @@ import java.util.Scanner;
 
 public class TextEditor {
     private boolean writeMode = false;
-    private int lineNumber = 0;
-    private ArrayList<String> lines;
+    private ArrayList<String> buffer;
 
     public TextEditor() {
-        this.lines = new ArrayList<>();
+        this.buffer = new ArrayList<>();
     }
 
     /**
@@ -34,10 +33,9 @@ public class TextEditor {
                 if(choice.equals(".")) {
                     this.writeMode = false;
 
-                //Otherwise write line to ArrayList of lines
+                //Otherwise write line to buffer
                 } else {
-                    this.lines.add(choice);
-                    this.lineNumber++;
+                    this.buffer.add(choice);
                 }
 
             //If we're not in write mode
@@ -72,7 +70,7 @@ public class TextEditor {
      * @param note The note where the buffer is written too
      */
     private void writeToNote(Note note) {
-        for(String line : lines) {
+        for(String line : buffer) {
             note.appendNote(line+"\n");
         }
     }
