@@ -41,17 +41,6 @@ public class Main {
         }
     }
 
-    private static void enterNote() {
-        Scanner in = new Scanner(System.in);
-
-        System.out.print("Enter note title: ");
-        String title = in.nextLine();
-
-        TextEditor ed = new TextEditor();
-        Note note = ed.use(title);
-        note.upload();
-    }
-
     private static void showAllNotes() {
         Connection connection = connect();
 
@@ -133,7 +122,8 @@ public class Main {
 
             switch(result) {
                 case 1:
-                    enterNote();
+                    TextEditor ed = new TextEditor();
+                    ed.use();
                     break;
                 case 2:
                     showAllNotes();

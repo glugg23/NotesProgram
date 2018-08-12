@@ -5,22 +5,19 @@ public class TextEditor {
     private boolean writeMode = false;
     private ArrayList<String> buffer;
     private String errorMessage;
+    private String filename = "";
 
     public TextEditor() {
         this.buffer = new ArrayList<>();
     }
 
     /**
-     * Runs a text editor similar to ed, allowing the user to write more complex notes
-     *
-     * parameters may change to not take in a title
-     *
-     * @param title The title for the note
-     * @return A note object with the title and content inputted
+     * Runs a text editor similar to ed
      */
-    public Note use(String title) {
+    //TODO Strip all white space before commands
+    public void use() {
         Scanner in = new Scanner(System.in);
-        Note note = new Note(title);
+        //Note note = new Note(title);
 
         String command;
 
@@ -34,7 +31,7 @@ public class TextEditor {
                     i(command);
                     break;
                 case 'w':
-                    writeToNote(note);
+                    w(command);
                     break;
                 case 'q':
                     break;
@@ -45,8 +42,6 @@ public class TextEditor {
             }
 
         } while(!command.equals("q"));
-
-        return note;
     }
 
     /**
@@ -58,6 +53,7 @@ public class TextEditor {
         //Check to make sure there isn't anymore to the command
         if(command.length() > 1) {
             this.errorMessage = "Unknown command";
+            System.out.println("?");
             return;
         }
 
@@ -80,13 +76,31 @@ public class TextEditor {
     }
 
     /**
-     * Write the whole buffer to one note, inserting a newline after each element in the array
+     * Writes current buffer to note, using rest of command for filename/title
      *
-     * @param note The note where the buffer is written too
+     * @param command The rest of the command for error checking and to get the filename
      */
-    private void writeToNote(Note note) {
-        for(String line : buffer) {
-            note.appendNote(line+"\n");
+    private void w(String command) {
+        try {
+            if(command.charAt(1) != ' ') {
+                this.errorMessage = "No filename input";
+                System.out.println("?");
+                return;
+            }
+        //Case for when only w is inputted
+        } catch(StringIndexOutOfBoundsException e) {
+            this.errorMessage = "No filename input";
+            System.out.println("?");
+            return;
         }
+
+        this.filename = command.substring(2);
+        Note note = new Note(this.filename);
+
+        for(String line : this.buffer) {
+            note.appendNote(line + "\n");
+        }
+
+        note.upload();
     }
 }
