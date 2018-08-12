@@ -84,7 +84,7 @@ public class Main {
             System.out.println(e.getMessage());
         }
 
-        String fileUrl = String.format("./db/%s.txt", note.getTitle());
+        String fileUrl = String.format("./db/%s", note.getTitle());
 
         Path path = Paths.get(fileUrl);
 
@@ -94,6 +94,26 @@ public class Main {
 
         } catch(IOException e) {
             System.out.println("ERROR: File already exists");
+        }
+    }
+
+    private static void uploadFile() {
+        Scanner in = new Scanner(System.in);
+        String path;
+        System.out.print("Enter file name: ");
+        path = in.nextLine();
+
+        String content;
+
+        try {
+            byte[] bytes = Files.readAllBytes(Paths.get(path));
+            content = new String(bytes);
+
+            Note note = new Note(path, content);
+            note.upload();
+
+        } catch(IOException e) {
+            System.out.println(e.getMessage());
         }
     }
 
@@ -109,6 +129,7 @@ public class Main {
                     "\t1 - Enter note\n" +
                     "\t2 - Show all notes\n" +
                     "\t3 - Save note to file\n" +
+                    "\t4 - Upload file\n" +
                     "\t0 - Exit\n");
 
             System.out.print("-> ");
@@ -131,6 +152,9 @@ public class Main {
                     break;
                 case 3:
                     saveNote();
+                    break;
+                case 4:
+                    uploadFile();
                     break;
                 case 0:
                     System.out.println("Goodbye");
