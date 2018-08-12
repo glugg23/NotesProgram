@@ -51,7 +51,7 @@ public class TextEditor {
      */
     private void i(String command) {
         //Check to make sure there isn't anymore to the command
-        if(command.length() > 1) {
+        if(!command.equals("i")) {
             this.errorMessage = "Unknown command";
             System.out.println("?");
             return;
@@ -81,26 +81,36 @@ public class TextEditor {
      * @param command The rest of the command for error checking and to get the filename
      */
     private void w(String command) {
-        try {
-            if(command.charAt(1) != ' ') {
+        //If only w is inputted handle case for when a filename already exists and when it does not
+        if(command.equals("w")) {
+            if(this.filename.isEmpty()) {
                 this.errorMessage = "No filename input";
                 System.out.println("?");
-                return;
+
+            } else {
+                Note note = new Note(this.filename);
+
+                for(String line : this.buffer) {
+                    note.appendNote(line + "\n");
+                }
+
+                //note.update();
             }
-        //Case for when only w is inputted
-        } catch(StringIndexOutOfBoundsException e) {
-            this.errorMessage = "No filename input";
+
+        //Otherwise check the command and see if it is valid
+        } else if(command.length() < 3 || command.charAt(1) != ' ') {
+            this.errorMessage = "Incorrect command format";
             System.out.println("?");
-            return;
+
+        } else {
+            this.filename = command.substring(2);
+            Note note = new Note(this.filename);
+
+            for(String line : this.buffer) {
+                note.appendNote(line + "\n");
+            }
+
+            note.upload();
         }
-
-        this.filename = command.substring(2);
-        Note note = new Note(this.filename);
-
-        for(String line : this.buffer) {
-            note.appendNote(line + "\n");
-        }
-
-        note.upload();
     }
 }
