@@ -96,13 +96,16 @@ public class Note {
         if(this == o) return true;
         if(o == null || getClass() != o.getClass()) return false;
 
-        Note note = (Note) o;
+        Note note1 = (Note) o;
 
-        return title.equals(note.title);
+        if(!title.equals(note1.title)) return false;
+        return note.equals(note1.note);
     }
 
     @Override
     public int hashCode() {
-        return title.hashCode();
+        int result = title.hashCode();
+        result = 31 * result + note.hashCode();
+        return result;
     }
 }
