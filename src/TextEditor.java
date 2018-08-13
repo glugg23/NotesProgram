@@ -16,7 +16,6 @@ public class TextEditor {
     /**
      * Runs a text editor similar to ed
      */
-    //TODO Strip all white space before commands
     public void use() {
         Scanner in = new Scanner(System.in);
         String command;
@@ -27,6 +26,22 @@ public class TextEditor {
             }
 
             command = in.nextLine();
+
+            if(!command.isEmpty()) {
+                while(Character.isWhitespace(command.charAt(0))) {
+                    command = command.substring(1);
+                }
+
+            } else {
+                //This should be null command, where if an address is found before that, it should print that address
+                this.errorMessage = "Unknown command";
+                System.out.println("?");
+                if(this.helpMode) {
+                    System.out.println(this.errorMessage);
+                }
+                //This command has already been handled so we don't want to go to the switch statement
+                continue;
+            }
 
             //Get first char for command
             switch(command.charAt(0)) {
