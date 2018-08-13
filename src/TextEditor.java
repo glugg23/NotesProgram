@@ -3,6 +3,7 @@ import java.util.Scanner;
 
 public class TextEditor {
     private boolean writeMode = false;
+    private boolean promptMode = false;
     private ArrayList<String> buffer;
     private String errorMessage;
     private String filename = "";
@@ -22,7 +23,10 @@ public class TextEditor {
         String command;
 
         do {
-            System.out.print("-> ");
+            if(this.promptMode) {
+                System.out.print("*");
+            }
+
             command = in.nextLine();
 
             //Get first char for command
@@ -32,6 +36,15 @@ public class TextEditor {
                     break;
                 case 'w':
                     w(command);
+                    break;
+                case 'P':
+                    if(!command.equals("P")) {
+                        this.errorMessage = "Unknown command";
+                        System.out.println("?");
+
+                    } else {
+                        this.promptMode = !this.promptMode;
+                    }
                     break;
                 case 'q':
                     break;
