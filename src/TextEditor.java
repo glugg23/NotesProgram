@@ -27,6 +27,36 @@ public class TextEditor {
 
             command = in.nextLine();
 
+            //Find addresses for command
+            for(int i = 0; i < command.length(); ++i) {
+                if(Character.isDigit(command.charAt(i))) {
+                    //Handle setting addresses
+
+                } else {
+                    switch(command.charAt(i)) {
+                        //Otherwise check for special cases
+                        case '.': //Current line in buffer
+                        case '$': //Last line in buffer
+                        case ',': //First through last lines in buffer TODO Make sure this doesn't work strange when in between 2 addresses
+                        case ';': //Current through last lines in buffer
+                        case '+': //Next line TODO Make sure this works with multiple +'s in a row
+                        case '-': //Previous line TODO See last todo
+                        //TODO Add cases not handled: regex on this line, and line previous, and +- followed by number
+                        default:
+                            /*
+                            Fails when:
+                            No address given
+                            Any address is negative
+                            Second address is larger than buffer size
+
+                            Special case:
+                            If there is only one address given, second address should be set equal to first
+                             */
+                            break;
+                    }
+                }
+            }
+
             if(!command.isEmpty()) {
                 while(Character.isWhitespace(command.charAt(0))) {
                     command = command.substring(1);
@@ -86,7 +116,6 @@ public class TextEditor {
                     } else {
                         this.helpMode = !this.helpMode;
                     }
-
                     break;
                 case 'q':
                     break;
