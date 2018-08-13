@@ -4,6 +4,7 @@ import java.util.Scanner;
 public class TextEditor {
     private boolean writeMode = false;
     private boolean promptMode = false;
+    private boolean helpMode = false;
     private ArrayList<String> buffer;
     private String errorMessage;
     private String filename = "";
@@ -18,8 +19,6 @@ public class TextEditor {
     //TODO Strip all white space before commands
     public void use() {
         Scanner in = new Scanner(System.in);
-        //Note note = new Note(title);
-
         String command;
 
         do {
@@ -41,16 +40,47 @@ public class TextEditor {
                     if(!command.equals("P")) {
                         this.errorMessage = "Unknown command";
                         System.out.println("?");
+                        if(this.helpMode) {
+                            System.out.println(this.errorMessage);
+                        }
 
                     } else {
                         this.promptMode = !this.promptMode;
                     }
+                    break;
+                case 'h':
+                    if(!command.equals("h")) {
+                        this.errorMessage = "Unknown command";
+                        System.out.println("?");
+                        if(this.helpMode) {
+                            System.out.println(this.errorMessage);
+                        }
+
+                    } else {
+                        System.out.println(this.errorMessage);
+                    }
+                    break;
+                case 'H':
+                    if(!command.equals("H")) {
+                        this.errorMessage = "Unknown command";
+                        System.out.println("?");
+                        if(this.helpMode) {
+                            System.out.println(this.errorMessage);
+                        }
+
+                    } else {
+                        this.helpMode = !this.helpMode;
+                    }
+
                     break;
                 case 'q':
                     break;
                 default:
                     this.errorMessage = "Unknown command";
                     System.out.println("?");
+                    if(this.helpMode) {
+                        System.out.println(this.errorMessage);
+                    }
                     break;
             }
 
@@ -67,6 +97,9 @@ public class TextEditor {
         if(!command.equals("i")) {
             this.errorMessage = "Unknown command";
             System.out.println("?");
+            if(this.helpMode) {
+                System.out.println(this.errorMessage);
+            }
             return;
         }
 
@@ -99,6 +132,9 @@ public class TextEditor {
             if(this.filename.isEmpty()) {
                 this.errorMessage = "No filename input";
                 System.out.println("?");
+                if(this.helpMode) {
+                    System.out.println(this.errorMessage);
+                }
 
             } else {
                 Note note = new Note(this.filename);
@@ -114,6 +150,9 @@ public class TextEditor {
         } else if(command.length() < 3 || command.charAt(1) != ' ') {
             this.errorMessage = "Incorrect command format";
             System.out.println("?");
+            if(this.helpMode) {
+                System.out.println(this.errorMessage);
+            }
 
         } else {
             this.filename = command.substring(2);
