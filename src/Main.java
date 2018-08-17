@@ -50,6 +50,7 @@ public class Main {
                     do {
                         System.out.println("Encryption Menu\n" +
                                 "\t1 - Generate key\n" +
+                                "\t2 - Encrypt and upload file\n" +
                                 "\t0 - Exit\n");
 
                         System.out.print("-> ");
@@ -71,6 +72,11 @@ public class Main {
                                 } catch(Exception e) {
                                     System.out.println(e.getMessage());
                                 }
+                                break;
+                            case 2:
+                                System.out.print("Enter file name: ");
+                                String unencryptedFilename = in.nextLine();
+                                Encryption.encryptFile(unencryptedFilename);
                                 break;
                             case 0:
                                 break;
