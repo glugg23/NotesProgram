@@ -1,11 +1,9 @@
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
 public class Note {
     private String title;
-    //Might make this an ArrayList of Strings
     private String note = "";
 
     /**
@@ -48,31 +46,13 @@ public class Note {
     }
 
     /**
-     *
-     * @return connect A valid connect to the database
-     */
-    private Connection connect() {
-        String url = "jdbc:sqlite:db/notes.db";
-        Connection connection = null;
-
-        try {
-            connection = DriverManager.getConnection(url);
-
-        } catch(SQLException e) {
-            System.out.println(e.getMessage());
-        }
-
-        return connection;
-    }
-
-    /**
      * Uploads Note object to database
      */
     public void upload() {
         String query = "INSERT INTO notes(title, content) VALUES (?, ?)";
 
         try {
-            Connection connection = this.connect();
+            Connection connection = SQL.connect();
             PreparedStatement pstmnt = connection.prepareStatement(query);
 
             pstmnt.setString(1, this.title);
@@ -92,7 +72,7 @@ public class Note {
         String query = "UPDATE notes SET content=? WHERE title=?";
 
         try {
-            Connection connection = this.connect();
+            Connection connection = SQL.connect();
             PreparedStatement pstmnt = connection.prepareStatement(query);
             pstmnt.setString(1, this.note);
             pstmnt.setString(2, this.title);
