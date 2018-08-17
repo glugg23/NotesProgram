@@ -3,6 +3,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.sql.*;
+import java.time.Instant;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
@@ -121,7 +122,7 @@ public class Main {
         initialSetup();
 
         Scanner in = new Scanner(System.in);
-        int result;
+        int mainMenuChoice;
 
         do {
             System.out.println("Notes Program V0.1\n" +
@@ -130,19 +131,20 @@ public class Main {
                     "\t2 - Show all notes\n" +
                     "\t3 - Save note to file\n" +
                     "\t4 - Upload file\n" +
+                    "\t5 - Encryption menu\n" +
                     "\t0 - Exit\n");
 
             System.out.print("-> ");
 
             try {
-                result = in.nextInt();
+                mainMenuChoice = in.nextInt();
 
             } catch(InputMismatchException e) {
                 System.out.println("Invalid option");
-                result = -1;
+                mainMenuChoice = -1;
             }
 
-            switch(result) {
+            switch(mainMenuChoice) {
                 case 1:
                     TextEditor ed = new TextEditor();
                     ed.use();
@@ -156,6 +158,49 @@ public class Main {
                 case 4:
                     uploadFile();
                     break;
+                case 5:
+                    int encryptionMenuChoice;
+                    do {
+                        System.out.println("Encryption Menu\n" +
+                                "\t1 - Generate key\n" +
+                                "\t0 - Exit\n");
+
+                        System.out.print("-> ");
+
+                        try {
+                            encryptionMenuChoice = in.nextInt();
+
+                        } catch(InputMismatchException e) {
+                            System.out.println("Invalid option");
+                            encryptionMenuChoice = -1;
+                        }
+
+                        switch(encryptionMenuChoice) {
+                            case 1:
+                                try {
+                                    byte[] key = Encryption.generateKey();
+
+                                    String query = "INSERT INTO keys(key, creation_date) VALUES(?, ?)";
+                                    Connection connection = connect();
+                                    PreparedStatement pstmnt = connection.prepareStatement(query);
+                                    pstmnt.setString(1, new String(key));
+                                    pstmnt.setTimestamp(2, Timestamp.from(Instant.now()));
+                                    pstmnt.execute();
+
+                                } catch(Exception e) {
+                                    System.out.println(e.getMessage());
+                                }
+                                break;
+                            case 0:
+                                break;
+                            default:
+                                in.nextLine();
+                                break;
+                        }
+
+                    } while(encryptionMenuChoice != 0);
+
+                    break;
                 case 0:
                     System.out.println("Goodbye");
                     break;
@@ -164,7 +209,7 @@ public class Main {
                     break;
             }
 
-        } while(result != 0);
+        } while(mainMenuChoice != 0);
 
         in.close();
     }
