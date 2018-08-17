@@ -108,42 +108,74 @@ public class SQL {
     }
 
     /**
-     * Saves note to a file
-     * TODO Make this handle notes with the same title
+     * Saves note to a file, if there are multiple notes with the same title it saves them all
      */
     public static void saveNote() {
         Scanner in = new Scanner(System.in);
 
         System.out.print("Enter note title: ");
         String title = in.nextLine();
-        Note note = new Note(title);
 
-        String query = "SELECT * FROM notes WHERE title=?";
+        String notesQuery = "SELECT * FROM notes WHERE title=?";
+        String countQuery = "SELECT COUNT(*) FROM notes WHERE title=?";
         Connection connection = connect();
 
         try {
-            PreparedStatement pstmnt = connection.prepareStatement(query);
-            pstmnt.setString(1, note.getTitle());
-            ResultSet rs = pstmnt.executeQuery();
+            PreparedStatement notesStatement = connection.prepareStatement(notesQuery);
+            notesStatement.setString(1, title);
 
-            while(rs.next()) {
-                note.setNote(rs.getString("content"));
+            PreparedStatement countStatement = connection.prepareStatement(countQuery);
+            countStatement.setString(1, title);
+
+            ResultSet notes = notesStatement.executeQuery();
+            ResultSet countRS = countStatement.executeQuery();
+
+            countRS.next();
+            int count = countRS.getInt(1);
+
+            if(count == 1) {
+                notes.next();
+                String url = String.format("./db/%s", title);
+                Path path = Paths.get(url);
+
+                try {
+                    Files.createFile(path);
+                    Files.write(path, notes.getString("content").getBytes());
+
+                } catch(IOException e) {
+                    System.out.println(e.getMessage());
+                }
+
+            } else {
+                System.out.println("There were " + count + " number of notes with this name");
+
+                //For loop going through all of notes and incrementing i each time
+                for(int i = 1; notes.next(); ++i) {
+                    String url = String.format("./db/%s (%d)", title, i);
+                    Path path = Paths.get(url);
+
+                    try {
+                        Files.createFile(path);
+                        Files.write(path, notes.getString("content").getBytes());
+
+                    } catch(IOException e) {
+                        System.out.println(e.getMessage());
+                    }
+                }
             }
 
         } catch(SQLException e) {
             System.out.println(e.getMessage());
-        }
 
-        String fileUrl = String.format("./db/%s", note.getTitle());
+        } finally {
+            try {
+                if(connection != null) {
+                    connection.close();
+                }
 
-        Path path = Paths.get(fileUrl);
-
-        try {
-            Files.createFile(path);
-            Files.write(path, note.getNote().getBytes());
-
-        } catch(IOException e) {
-            System.out.println("ERROR: File already exists");
+            } catch(SQLException e) {
+                System.out.println(e.getMessage());
+            }
         }
     }
 
