@@ -37,10 +37,14 @@ public class Main {
                     SQL.showAllNotes();
                     break;
                 case 3:
-                    SQL.saveNote();
+                    System.out.print("Enter note title: ");
+                    String title = in.nextLine();
+                    SQL.saveNote(title);
                     break;
                 case 4:
-                    SQL.uploadFile();
+                    System.out.print("Enter file name: ");
+                    String filename = in.nextLine();
+                    SQL.uploadFile(filename);
                     break;
                 case 5:
                     int encryptionMenuChoice;

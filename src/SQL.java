@@ -3,7 +3,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.sql.*;
-import java.util.Scanner;
 
 public class SQL {
     /**
@@ -110,12 +109,7 @@ public class SQL {
     /**
      * Saves note to a file, if there are multiple notes with the same title it saves them all
      */
-    public static void saveNote() {
-        Scanner in = new Scanner(System.in);
-
-        System.out.print("Enter note title: ");
-        String title = in.nextLine();
-
+    public static void saveNote(String title) {
         String notesQuery = "SELECT * FROM notes WHERE title=?";
         String countQuery = "SELECT COUNT(*) FROM notes WHERE title=?";
         Connection connection = connect();
@@ -182,19 +176,14 @@ public class SQL {
     /**
      * Reads in a file and saves it in the database
      */
-    public static void uploadFile() {
-        Scanner in = new Scanner(System.in);
-        String path;
-        System.out.print("Enter file name: ");
-        path = in.nextLine();
-
+    public static void uploadFile(String filename) {
         String content;
 
         try {
-            byte[] bytes = Files.readAllBytes(Paths.get(path));
+            byte[] bytes = Files.readAllBytes(Paths.get(filename));
             content = new String(bytes);
 
-            Note note = new Note(path, content);
+            Note note = new Note(filename, content);
             note.upload();
 
         } catch(IOException e) {
