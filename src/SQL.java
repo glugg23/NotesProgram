@@ -47,8 +47,8 @@ public class SQL {
                     + " expiry_date TIMESTAMP DEFAULT null\n"
                     + ");";
 
-            String createNotesIndex = "CREATE INDEX notes_title_index ON notes(title);";
-            String createKeysIndex = "CREATE UNIQUE INDEX keys_id_uindex ON keys(id);";
+            String createNotesIndex = "CREATE INDEX IF NOT EXISTS notes_title_index ON notes(title);";
+            String createKeysIndex = "CREATE UNIQUE INDEX IF NOT EXISTS keys_id_uindex ON keys(id);";
 
             Statement statement = connection.createStatement();
             statement.addBatch(createNotesTable);
@@ -63,25 +63,47 @@ public class SQL {
     }
 
     /**
-     * Prints out all saved notes
-     * TODO Make this more elegant
+     * Prints out all saved notes, shortens any long notes to just show the first 40 characters
      */
     public static void showAllNotes() {
         Connection connection = connect();
 
-        String query = "SELECT * FROM notes";
+        String notesQuery = "SELECT * FROM notes";
+        String countQuery = "SELECT COUNT(*) FROM notes";
 
         try {
-            Statement statement = connection.createStatement();
-            ResultSet rs = statement.executeQuery(query);
+            Statement statementNotes = connection.createStatement();
+            Statement statementCount = connection.createStatement();
+            ResultSet notes = statementNotes.executeQuery(notesQuery);
+            ResultSet countRS = statementCount.executeQuery(countQuery);
 
-            while(rs.next()) {
-                System.out.println("title: " + rs.getString("title") + "\n" +
-                        "content:\n" + rs.getString("content"));
+            countRS.next();
+            int count = countRS.getInt(1);
+
+            System.out.println("Number of notes: " + count);
+
+            while(notes.next()) {
+                String content = notes.getString("content");
+                if(content.length() > 41) {
+                    content = content.substring(0, 37) + "...\n";
+                }
+
+                System.out.println("title: " + notes.getString("title") + "\n" +
+                        "content:" + content);
             }
 
         } catch(SQLException e) {
             System.out.println(e.getMessage());
+
+        } finally {
+            try {
+                if(connection != null) {
+                    connection.close();
+                }
+
+            } catch(SQLException e) {
+                System.out.println(e.getMessage());
+            }
         }
     }
 
