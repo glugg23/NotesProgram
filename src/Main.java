@@ -1,4 +1,3 @@
-import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class Main {
@@ -21,9 +20,9 @@ public class Main {
             System.out.print("-> ");
 
             try {
-                mainMenuChoice = in.nextInt();
+                mainMenuChoice = Integer.parseInt(in.nextLine());
 
-            } catch(InputMismatchException e) {
+            } catch(NumberFormatException e) {
                 System.out.println("Invalid option");
                 mainMenuChoice = -1;
             }
@@ -56,9 +55,9 @@ public class Main {
                         System.out.print("-> ");
 
                         try {
-                            encryptionMenuChoice = in.nextInt();
+                            encryptionMenuChoice = Integer.parseInt(in.nextLine());
 
-                        } catch(InputMismatchException e) {
+                        } catch(NumberFormatException e) {
                             System.out.println("Invalid option");
                             encryptionMenuChoice = -1;
                         }
