@@ -51,6 +51,7 @@ public class Main {
                         System.out.println("Encryption Menu\n" +
                                 "\t1 - Generate key\n" +
                                 "\t2 - Encrypt and upload file\n" +
+                                "\t3 - Decrypt and save note\n" +
                                 "\t0 - Exit\n");
 
                         System.out.print("-> ");
@@ -77,6 +78,17 @@ public class Main {
                                 System.out.print("Enter file name: ");
                                 String unencryptedFilename = in.nextLine();
                                 Encryption.encryptFile(unencryptedFilename);
+                                break;
+                            case 3:
+                                System.out.print("Enter note title: ");
+                                String encryptedTitle = in.nextLine();
+
+                                try {
+                                    Encryption.decryptNote(encryptedTitle);
+
+                                } catch(IllegalArgumentException e) {
+                                    System.out.println(e.getMessage());
+                                }
                                 break;
                             case 0:
                                 break;

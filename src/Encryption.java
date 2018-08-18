@@ -121,4 +121,75 @@ public class Encryption {
             System.out.println(e.getMessage());
         }
     }
+
+    public static void decryptNote(String title) {
+        String noteQuery = "SELECT * FROM notes WHERE title=?";
+        String keyQuery = "SELECT * FROM keys";
+        Connection connection = SQL.connect();
+        Note note;
+        byte[] key;
+
+        try {
+            PreparedStatement notesStatement = connection.prepareStatement(noteQuery);
+            notesStatement.setString(1, title);
+            ResultSet notes = notesStatement.executeQuery();
+
+            Statement keyStatement = connection.createStatement();
+            ResultSet keys = keyStatement.executeQuery(keyQuery);
+
+            //Get first value of rs
+            notes.next();
+            note = new Note(notes.getString("title"), notes.getString("content"));
+
+            //Get first key
+            keys.next();
+            String base64 = keys.getString("key");
+            key = Base64.getDecoder().decode(base64.getBytes());
+
+        } catch(SQLException e) {
+            System.out.println(e.getMessage());
+            return;
+
+        } finally {
+            try {
+                if(connection != null) {
+                    connection.close();
+                }
+
+            } catch(SQLException e) {
+                System.out.println(e.getMessage());
+            }
+        }
+
+        byte[] decodedMessage = Base64.getDecoder().decode(note.getNote().getBytes());
+
+        //Gets message and checks if it is valid
+        ByteBuffer byteBuffer = ByteBuffer.wrap(decodedMessage);
+        int ivLength = byteBuffer.getInt();
+        if(ivLength < 12 || ivLength >= 16) {
+            throw new IllegalArgumentException("Invalid iv length");
+        }
+        byte[] iv = new byte[ivLength];
+        byteBuffer.get(iv);
+        byte[] encryptedMessage = new byte[byteBuffer.remaining()];
+        byteBuffer.get(encryptedMessage);
+
+        try {
+            Cipher cipher = Cipher.getInstance("AES/GCM/PKCS5Padding");
+            cipher.init(cipher.DECRYPT_MODE, new SecretKeySpec(key, "AES"), new GCMParameterSpec(128, iv));
+            byte[] decryptedMessage = cipher.doFinal(encryptedMessage);
+            note.setNote(new String(decryptedMessage));
+
+        } catch(Exception e) {
+            System.out.println(e.getMessage());
+        }
+
+        try {
+            Files.createFile(Paths.get(note.getTitle()));
+            Files.write(Paths.get(note.getTitle()), note.getNote().getBytes());
+
+        } catch(IOException e) {
+            System.out.println(e.getMessage());
+        }
+    }
 }
