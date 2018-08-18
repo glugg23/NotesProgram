@@ -23,7 +23,6 @@ public class Main {
                 mainMenuChoice = Integer.parseInt(in.nextLine());
 
             } catch(NumberFormatException e) {
-                System.out.println("Invalid option");
                 mainMenuChoice = -1;
             }
 
@@ -60,7 +59,6 @@ public class Main {
                             encryptionMenuChoice = Integer.parseInt(in.nextLine());
 
                         } catch(NumberFormatException e) {
-                            System.out.println("Invalid option");
                             encryptionMenuChoice = -1;
                         }
 
@@ -93,7 +91,7 @@ public class Main {
                             case 0:
                                 break;
                             default:
-                                in.nextLine();
+                                System.out.println("Invalid option");
                                 break;
                         }
 
@@ -104,7 +102,7 @@ public class Main {
                     System.out.println("Goodbye");
                     break;
                 default:
-                    in.nextLine();
+                    System.out.println("Invalid option");
                     break;
             }
 
