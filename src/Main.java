@@ -1,3 +1,4 @@
+import java.util.Optional;
 import java.util.Scanner;
 
 public class Main {
@@ -64,13 +65,8 @@ public class Main {
 
                         switch(encryptionMenuChoice) {
                             case 1:
-                                try {
-                                    byte[] key = Encryption.generateKey();
-                                    Encryption.insertKey(key);
-
-                                } catch(Exception e) {
-                                    System.out.println(e.getMessage());
-                                }
+                                Optional<byte[]> optionalKey = Encryption.generateKey();
+                                optionalKey.ifPresent(Encryption::insertKey);
                                 break;
                             case 2:
                                 System.out.print("Enter file name: ");
@@ -82,7 +78,7 @@ public class Main {
                                 String encryptedTitle = in.nextLine();
 
                                 try {
-                                    Encryption.decryptNote(encryptedTitle);
+                                    Encryption.decryptAndSaveNote(encryptedTitle);
 
                                 } catch(IllegalArgumentException e) {
                                     System.out.println(e.getMessage());

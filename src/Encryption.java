@@ -7,29 +7,35 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.sql.*;
 import java.time.Instant;
 import java.util.Base64;
+import java.util.Optional;
 
 //import java.nio.file.Path;
 
 public class Encryption {
     /**
      * Generates a new key for encryption
-     * @return A Base64 encoded 128bit AES key
-     * @throws Exception NoSuchAlgorithmException: Which should never throw
+     * @return A Base64 encoded 128bit AES key, or Nothing if something went wrong
      */
     //TODO Add way to choose key size and expiry date
-    public static byte[] generateKey() throws Exception {
-        KeyGenerator keygen = KeyGenerator.getInstance("AES");
-        keygen.init(128);
-        byte[] key = keygen.generateKey().getEncoded();
-        SecretKey secretKey = new SecretKeySpec(key, "AES");
+    public static Optional<byte[]> generateKey() {
+        try {
+            KeyGenerator keygen = KeyGenerator.getInstance("AES");
+            keygen.init(128);
+            byte[] key = keygen.generateKey().getEncoded();
+            SecretKey secretKey = new SecretKeySpec(key, "AES");
+            byte[] encodedBytes = Base64.getEncoder().encode(secretKey.getEncoded());
 
-        byte[] encodedBytes = Base64.getEncoder().encode(secretKey.getEncoded());
-        //System.out.println(new String(encodedBytes));
-        return encodedBytes;
+            return Optional.of(encodedBytes);
+
+        } catch(NoSuchAlgorithmException e) {
+            System.out.println(e.getMessage());
+        }
+        return Optional.empty();
     }
 
     /**
@@ -122,7 +128,7 @@ public class Encryption {
         }
     }
 
-    public static void decryptNote(String title) {
+    public static void decryptAndSaveNote(String title) {
         String noteQuery = "SELECT * FROM notes WHERE title=?";
         String keyQuery = "SELECT * FROM keys";
         Connection connection = SQL.connect();
@@ -137,7 +143,7 @@ public class Encryption {
             Statement keyStatement = connection.createStatement();
             ResultSet keys = keyStatement.executeQuery(keyQuery);
 
-            //Get first value of rs
+            //Get first note
             notes.next();
             note = new Note(notes.getString("title"), notes.getString("content"));
 
