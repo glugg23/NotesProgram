@@ -1,3 +1,5 @@
+import javafx.util.Pair;
+
 import javax.crypto.Cipher;
 import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
@@ -129,45 +131,20 @@ public class Encryption {
     }
 
     public static void decryptAndSaveNote(String title) {
-        String noteQuery = "SELECT * FROM notes WHERE title=?";
-        String keyQuery = "SELECT * FROM keys";
-        Connection connection = SQL.connect();
-        Note note;
-        byte[] key;
+        Pair<byte[], Note> keyNotePair;
 
-        try {
-            PreparedStatement notesStatement = connection.prepareStatement(noteQuery);
-            notesStatement.setString(1, title);
-            ResultSet notes = notesStatement.executeQuery();
+        Optional<Pair<byte[], Note>> optionalPair = SQL.getNoteAndKeyPair(title);
 
-            Statement keyStatement = connection.createStatement();
-            ResultSet keys = keyStatement.executeQuery(keyQuery);
+        if(optionalPair.isPresent()) {
+            keyNotePair = new Pair<>(optionalPair.get().getKey(), optionalPair.get().getValue());
 
-            //Get first note
-            notes.next();
-            note = new Note(notes.getString("title"), notes.getString("content"));
-
-            //Get first key
-            keys.next();
-            String base64 = keys.getString("key");
-            key = Base64.getDecoder().decode(base64.getBytes());
-
-        } catch(SQLException e) {
-            System.out.println(e.getMessage());
+        } else {
+            //TODO Handle failure to find key
+            System.out.println("ERROR: Note not found");
             return;
-
-        } finally {
-            try {
-                if(connection != null) {
-                    connection.close();
-                }
-
-            } catch(SQLException e) {
-                System.out.println(e.getMessage());
-            }
         }
 
-        byte[] decodedMessage = Base64.getDecoder().decode(note.getNote().getBytes());
+        byte[] decodedMessage = Base64.getDecoder().decode(keyNotePair.getValue().getNote().getBytes());
 
         //Gets message and checks if it is valid
         ByteBuffer byteBuffer = ByteBuffer.wrap(decodedMessage);
@@ -182,17 +159,17 @@ public class Encryption {
 
         try {
             Cipher cipher = Cipher.getInstance("AES/GCM/PKCS5Padding");
-            cipher.init(cipher.DECRYPT_MODE, new SecretKeySpec(key, "AES"), new GCMParameterSpec(128, iv));
+            cipher.init(cipher.DECRYPT_MODE, new SecretKeySpec(keyNotePair.getKey(), "AES"), new GCMParameterSpec(128, iv));
             byte[] decryptedMessage = cipher.doFinal(encryptedMessage);
-            note.setNote(new String(decryptedMessage));
+            keyNotePair.getValue().setNote(new String(decryptedMessage));
 
         } catch(Exception e) {
             System.out.println(e.getMessage());
         }
 
         try {
-            Files.createFile(Paths.get(note.getTitle()));
-            Files.write(Paths.get(note.getTitle()), note.getNote().getBytes());
+            Files.createFile(Paths.get(title));
+            Files.write(Paths.get(title), keyNotePair.getValue().getNote().getBytes());
 
         } catch(IOException e) {
             System.out.println(e.getMessage());

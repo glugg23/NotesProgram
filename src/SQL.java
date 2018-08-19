@@ -1,8 +1,12 @@
+import javafx.util.Pair;
+
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.sql.*;
+import java.util.Base64;
+import java.util.Optional;
 
 public class SQL {
     /**
@@ -189,5 +193,49 @@ public class SQL {
         } catch(IOException e) {
             System.out.println(e.getMessage());
         }
+    }
+
+    public static Optional<Pair<byte[], Note>> getNoteAndKeyPair(String title) {
+        String noteQuery = "SELECT * FROM notes WHERE title=?";
+        String keyQuery = "SELECT * FROM keys";
+        Connection connection = SQL.connect();
+        Note note;
+        byte[] key;
+
+        try {
+            PreparedStatement notesStatement = connection.prepareStatement(noteQuery);
+            notesStatement.setString(1, title);
+            ResultSet notes = notesStatement.executeQuery();
+
+            Statement keyStatement = connection.createStatement();
+            ResultSet keys = keyStatement.executeQuery(keyQuery);
+
+            //Get first note
+            notes.next();
+            note = new Note(notes.getString("title"), notes.getString("content"));
+
+            //Get first key
+            keys.next();
+            String base64 = keys.getString("key");
+            key = Base64.getDecoder().decode(base64.getBytes());
+
+            Pair<byte[], Note> pair = new Pair<>(key, note);
+            return Optional.of(pair);
+
+        } catch(SQLException e) {
+            System.out.println(e.getMessage());
+
+        } finally {
+            try {
+                if(connection != null) {
+                    connection.close();
+                }
+
+            } catch(SQLException e) {
+                System.out.println(e.getMessage());
+            }
+        }
+
+        return Optional.empty();
     }
 }
