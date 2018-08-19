@@ -175,4 +175,43 @@ public class Encryption {
             System.out.println(e.getMessage());
         }
     }
+
+    public static void encryptNote(String title) {
+        Pair<byte[], Note> keyNotePair;
+
+        Optional<Pair<byte[], Note>> optionalPair = SQL.getNoteAndKeyPair(title);
+
+        if(optionalPair.isPresent()) {
+            keyNotePair = new Pair<>(optionalPair.get().getKey(), optionalPair.get().getValue());
+
+        } else {
+            //TODO Handle failure to find key
+            System.out.println("ERROR: Note not found");
+            return;
+        }
+
+        //Generating random initialization vector
+        SecureRandom secureRandom = new SecureRandom();
+        byte[] iv = new byte[12];
+        secureRandom.nextBytes(iv);
+
+        try {
+            Cipher cipher = Cipher.getInstance("AES/GCM/PKCS5Padding");
+            cipher.init(cipher.ENCRYPT_MODE, new SecretKeySpec(keyNotePair.getKey(), "AES"), new GCMParameterSpec(128, iv));
+            byte[] encryptedText = cipher.doFinal(keyNotePair.getValue().getNote().getBytes());
+
+            //Saves the iv length, the iv itself and the encrypted message in a binary form
+            ByteBuffer byteBuffer = ByteBuffer.allocate(4 + iv.length + encryptedText.length);
+            byteBuffer.putInt(iv.length);
+            byteBuffer.put(iv);
+            byteBuffer.put(encryptedText);
+            byte[] finalMessage = Base64.getEncoder().encode(byteBuffer.array());
+
+            keyNotePair.getValue().setNote(new String(finalMessage));
+            keyNotePair.getValue().update();
+
+        } catch(Exception e) {
+            System.out.println(e.getMessage());
+        }
+    }
 }
