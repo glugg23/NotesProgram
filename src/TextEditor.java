@@ -26,6 +26,21 @@ public class TextEditor {
 
             command = in.nextLine();
 
+            //Removes all whitespace
+            if(!command.isEmpty()) {
+                command = command.replaceAll("\\s", "");
+
+            } else {
+                //TODO This is null command which prints next line after current position
+                this.errorMessage = "Unknown command";
+                System.out.println("?");
+                if(this.helpMode) {
+                    System.out.println(this.errorMessage);
+                }
+                //This command has already been handled so we don't want to go to the switch statement
+                continue;
+            }
+
             //Find addresses for command
             for(int i = 0; i < command.length(); ++i) {
                 if(Character.isDigit(command.charAt(i))) {
@@ -54,22 +69,6 @@ public class TextEditor {
                             break;
                     }
                 }
-            }
-
-            if(!command.isEmpty()) {
-                while(Character.isWhitespace(command.charAt(0))) {
-                    command = command.substring(1);
-                }
-
-            } else {
-                //This should be null command, where if an address is found before that, it should print that address
-                this.errorMessage = "Unknown command";
-                System.out.println("?");
-                if(this.helpMode) {
-                    System.out.println(this.errorMessage);
-                }
-                //This command has already been handled so we don't want to go to the switch statement
-                continue;
             }
 
             //Get first char for command
