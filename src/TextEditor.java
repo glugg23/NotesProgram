@@ -2,7 +2,6 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 public class TextEditor {
-    private boolean writeMode = false;
     private boolean promptMode = false;
     private boolean helpMode = false;
     private ArrayList<String> buffer;
@@ -147,22 +146,17 @@ public class TextEditor {
             return;
         }
 
-        this.writeMode = true;
         Scanner in = new Scanner(System.in);
         String line;
 
-        while(this.writeMode) {
+        do {
             line = in.nextLine();
 
-            //End write mode if a single . is entered
-            if(line.equals(".")) {
-                this.writeMode = false;
-
-            //Otherwise write line to buffer
-            } else {
+            if(!line.equals(".")) {
                 this.buffer.add(line);
             }
-        }
+
+        } while(!line.equals("."));
     }
 
     /**
