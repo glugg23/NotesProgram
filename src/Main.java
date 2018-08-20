@@ -53,6 +53,7 @@ public class Main {
                                 "\t2 - Encrypt and upload file\n" +
                                 "\t3 - Decrypt and save note\n" +
                                 "\t4 - Encrypt note\n" +
+                                "\t5 - Decrypt note\n" +
                                 "\t0 - Exit\n");
 
                         System.out.print("-> ");
@@ -89,6 +90,17 @@ public class Main {
                                 System.out.print("Enter note title: ");
                                 String noteTitle = in.nextLine();
                                 Encryption.encryptNote(noteTitle);
+                                break;
+                            case 5:
+                                System.out.print("Enter note title: ");
+                                String encryptedNoteTitle = in.nextLine();
+
+                                try {
+                                    Encryption.decryptNote(encryptedNoteTitle);
+
+                                } catch(IllegalArgumentException e) {
+                                    System.out.println(e.getMessage());
+                                }
                                 break;
                             case 0:
                                 break;
