@@ -1,5 +1,7 @@
 import java.util.ArrayList;
 import java.util.Scanner;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class TextEditor {
     private boolean promptMode = false;
@@ -7,6 +9,8 @@ public class TextEditor {
     private ArrayList<String> buffer;
     private String errorMessage;
     private String filename = "";
+    private int firstAddress = 0;
+    private int secondAddress = 0;
 
     public TextEditor() {
         this.buffer = new ArrayList<>();
@@ -41,46 +45,30 @@ public class TextEditor {
                 continue;
             }
 
-            //Find addresses for command
-            for(int i = 0; i < command.length(); ++i) {
-                if(Character.isDigit(command.charAt(i))) {
-                    //Handle setting addresses
+            int commandPosition = extractAddresses(command);
 
-                } else {
-                    switch(command.charAt(i)) {
-                        //Otherwise check for special cases
-                        case '.': //Current line in buffer
-                        case '$': //Last line in buffer
-                        case ',': //First through last lines in buffer TODO Make sure this doesn't work strange when in between 2 addresses
-                        case ';': //Current through last lines in buffer
-                        case '+': //Next line TODO Make sure this works with multiple +'s in a row
-                        case '-': //Previous line TODO See last todo
-                        //TODO Add cases not handled: regex on this line, and line previous, and +- followed by number
-                        default:
-                            /*
-                            Fails when:
-                            No address given
-                            Any address is negative
-                            Second address is larger than buffer size
-
-                            Special case:
-                            If there is only one address given, second address should be set equal to first
-                             */
-                            break;
-                    }
+            if((this.firstAddress > this.secondAddress) || (this.secondAddress > this.buffer.size())) {
+                this.errorMessage = "Invalid address";
+                System.out.println("?");
+                if(this.helpMode) {
+                    System.out.println(this.errorMessage);
                 }
+                continue;
             }
 
             //Get first char for command
-            switch(command.charAt(0)) {
+            switch(command.charAt(commandPosition)) {
                 case 'i':
-                    i(command);
+                    i(command.substring(commandPosition));
                     break;
                 case 'w':
-                    w(command);
+                    w(command.substring(commandPosition));
+                    break;
+                case 'p':
+                    p(command.substring(commandPosition));
                     break;
                 case 'P':
-                    if(!command.equals("P")) {
+                    if(!command.substring(commandPosition).equals("P")) {
                         this.errorMessage = "Unknown command";
                         System.out.println("?");
                         if(this.helpMode) {
@@ -92,7 +80,7 @@ public class TextEditor {
                     }
                     break;
                 case 'h':
-                    if(!command.equals("h")) {
+                    if(!command.substring(commandPosition).equals("h")) {
                         this.errorMessage = "Unknown command";
                         System.out.println("?");
                         if(this.helpMode) {
@@ -104,7 +92,7 @@ public class TextEditor {
                     }
                     break;
                 case 'H':
-                    if(!command.equals("H")) {
+                    if(!command.substring(commandPosition).equals("H")) {
                         this.errorMessage = "Unknown command";
                         System.out.println("?");
                         if(this.helpMode) {
@@ -127,6 +115,81 @@ public class TextEditor {
             }
 
         } while(!command.equals("q"));
+    }
+
+    /**
+     * Using a regular expression to extract decimal numbers from a string
+     *
+     * @param command The command to extract an address from
+     * @return A decimal string or an empty string if nothing was found
+     */
+    private String extractNumber(String command) {
+        Pattern regex = Pattern.compile("\\d+");
+        Matcher matcher = regex.matcher(command);
+
+        //Finds the first match
+        if(matcher.find()) {
+            return matcher.group();
+
+        } else {
+            return "";
+        }
+    }
+
+    /**
+     * Takes in a full command and finds 1 or more addresses, and returns a position in the String
+     * where the actually command is
+     *
+     * @param command The command where the addresses need to be extracted from
+     * @return The location of the command to be executed
+     */
+    private int extractAddresses(String command) {
+        //Clear address variables
+        this.firstAddress = this.secondAddress = 0;
+
+        boolean firstAddressFound = false;
+
+        //Find addresses for command
+        for(int i = 0; i < command.length(); ++i) {
+            if(Character.isDigit(command.charAt(i))) {
+                String number = extractNumber(command.substring(i));
+
+                if(!firstAddressFound) {
+                    firstAddressFound = true;
+
+                    this.firstAddress = Integer.parseInt(number);
+                    this.secondAddress = Integer.parseInt(number);
+
+                } else {
+                    this.secondAddress = Integer.parseInt(number);
+                }
+
+                i += number.length() - 1;
+
+            } else {
+                switch(command.charAt(i)) {
+                    //Otherwise check for special cases
+                    case '.': //Current line in buffer
+                    case '$': //Last line in buffer
+                    case ',': //First through last lines in buffer
+
+                        //TODO Make this work more like the actual ed source code
+
+                        break;
+                    case ';': //Current through last lines in buffer
+                    case '+': //Next line TODO Make sure this works with multiple +'s in a row
+                    case '-': //Previous line TODO See last todo
+                        //TODO Add cases not handled: regex on this line, and line previous, and +- followed by number
+                    default:
+                        //Returns position of where the command is
+                        return i;
+                }
+            }
+        }
+
+        //TODO Maybe change this, but the exception can be useful to find out when somethig breaks
+        //Returns -1 if this does not happen
+        return -1;
     }
 
     /**
@@ -200,6 +263,22 @@ public class TextEditor {
             }
 
             note.upload();
+        }
+    }
+
+    private void p(String command) {
+        //Check to make sure just "p" is being passed
+        if(!command.equals("p")) {
+            this.errorMessage = "Unknown command";
+            System.out.println("?");
+            if(this.helpMode) {
+                System.out.println(this.errorMessage);
+            }
+            return;
+        }
+
+        for(int i = this.firstAddress; i <= this.secondAddress; ++i) {
+            System.out.println(this.buffer.get(i-1));
         }
     }
 }
