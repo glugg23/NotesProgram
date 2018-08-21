@@ -58,27 +58,6 @@ public class TextEditor {
 
             //Get first char for command
             switch(command.charAt(commandPosition)) {
-                case 'i':
-                    i(command.substring(commandPosition));
-                    break;
-                case 'w':
-                    w(command.substring(commandPosition));
-                    break;
-                case 'p':
-                    p(command.substring(commandPosition));
-                    break;
-                case 'P':
-                    if(!command.substring(commandPosition).equals("P")) {
-                        this.errorMessage = "Unknown command";
-                        System.out.println("?");
-                        if(this.helpMode) {
-                            System.out.println(this.errorMessage);
-                        }
-
-                    } else {
-                        this.promptMode = !this.promptMode;
-                    }
-                    break;
                 case 'h':
                     if(!command.substring(commandPosition).equals("h")) {
                         this.errorMessage = "Unknown command";
@@ -91,6 +70,7 @@ public class TextEditor {
                         System.out.println(this.errorMessage);
                     }
                     break;
+
                 case 'H':
                     if(!command.substring(commandPosition).equals("H")) {
                         this.errorMessage = "Unknown command";
@@ -103,8 +83,35 @@ public class TextEditor {
                         this.helpMode = !this.helpMode;
                     }
                     break;
+
+                case 'i':
+                    this.input(command.substring(commandPosition));
+                    break;
+
+                case 'p':
+                    this.print(command.substring(commandPosition));
+                    break;
+
+                case 'P':
+                    if(!command.substring(commandPosition).equals("P")) {
+                        this.errorMessage = "Unknown command";
+                        System.out.println("?");
+                        if(this.helpMode) {
+                            System.out.println(this.errorMessage);
+                        }
+
+                    } else {
+                        this.promptMode = !this.promptMode;
+                    }
+                    break;
+
                 case 'q':
                     break;
+
+                case 'w':
+                    this.write(command.substring(commandPosition));
+                    break;
+
                 default:
                     this.errorMessage = "Unknown command";
                     System.out.println("?");
@@ -197,7 +204,7 @@ public class TextEditor {
      *
      * @param command The rest of the command for error checking
      */
-    private void i(String command) {
+    private void input(String command) {
         //Check to make sure there isn't anymore to the command
         if(!command.equals("i")) {
             this.errorMessage = "Unknown command";
@@ -226,7 +233,7 @@ public class TextEditor {
      *
      * @param command The rest of the command for error checking and to get the filename
      */
-    private void w(String command) {
+    private void write(String command) {
         //If only w is inputted handle case for when a filename already exists and when it does not
         if(command.equals("w")) {
             if(this.filename.isEmpty()) {
@@ -266,7 +273,12 @@ public class TextEditor {
         }
     }
 
-    private void p(String command) {
+    /**
+     * Prints the lines from firstAddress to secondAddress
+     *
+     * @param command The rest of the command for error checking
+     */
+    private void print(String command) {
         //Check to make sure just "p" is being passed
         if(!command.equals("p")) {
             this.errorMessage = "Unknown command";
