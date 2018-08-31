@@ -61,7 +61,7 @@ public class Note {
             pstmnt.execute();
 
         } catch(SQLException e) {
-            System.out.println(e.getMessage());
+            e.printStackTrace();
         }
     }
 
@@ -80,7 +80,7 @@ public class Note {
             pstmnt.execute();
 
         } catch(SQLException e) {
-            System.out.println(e.getMessage());
+            e.printStackTrace();
         }
     }
 

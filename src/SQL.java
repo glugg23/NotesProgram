@@ -21,7 +21,7 @@ public class SQL {
             connection = DriverManager.getConnection(url);
 
         } catch(SQLException e) {
-            System.out.println(e.getMessage());
+            e.printStackTrace();
         }
 
         return connection;
@@ -61,7 +61,7 @@ public class SQL {
             statement.executeBatch();
 
         } catch(SQLException e) {
-            System.out.println(e.getMessage());
+            e.printStackTrace();
         }
     }
 
@@ -96,7 +96,7 @@ public class SQL {
             }
 
         } catch(SQLException e) {
-            System.out.println(e.getMessage());
+            e.printStackTrace();
 
         } finally {
             try {
@@ -105,7 +105,7 @@ public class SQL {
                 }
 
             } catch(SQLException e) {
-                System.out.println(e.getMessage());
+                e.printStackTrace();
             }
         }
     }
@@ -141,7 +141,7 @@ public class SQL {
                     Files.write(path, notes.getString("content").getBytes());
 
                 } catch(IOException e) {
-                    System.out.println(e.getMessage());
+                    e.printStackTrace();
                 }
 
             } else {
@@ -157,13 +157,13 @@ public class SQL {
                         Files.write(path, notes.getString("content").getBytes());
 
                     } catch(IOException e) {
-                        System.out.println(e.getMessage());
+                        e.printStackTrace();
                     }
                 }
             }
 
         } catch(SQLException e) {
-            System.out.println(e.getMessage());
+            e.printStackTrace();
 
         } finally {
             try {
@@ -172,7 +172,7 @@ public class SQL {
                 }
 
             } catch(SQLException e) {
-                System.out.println(e.getMessage());
+                e.printStackTrace();
             }
         }
     }
@@ -191,7 +191,7 @@ public class SQL {
             note.upload();
 
         } catch(IOException e) {
-            System.out.println(e.getMessage());
+            e.printStackTrace();
         }
     }
 
@@ -223,7 +223,7 @@ public class SQL {
             return Optional.of(pair);
 
         } catch(SQLException e) {
-            System.out.println(e.getMessage());
+            e.printStackTrace();
 
         } finally {
             try {
@@ -232,7 +232,7 @@ public class SQL {
                 }
 
             } catch(SQLException e) {
-                System.out.println(e.getMessage());
+                e.printStackTrace();
             }
         }
 

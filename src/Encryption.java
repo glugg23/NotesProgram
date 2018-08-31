@@ -35,7 +35,7 @@ public class Encryption {
             return Optional.of(encodedBytes);
 
         } catch(NoSuchAlgorithmException e) {
-            System.out.println(e.getMessage());
+            e.printStackTrace();
         }
         return Optional.empty();
     }
@@ -54,7 +54,7 @@ public class Encryption {
             pstmnt.execute();
 
         } catch(SQLException e) {
-            System.out.println(e.getMessage());
+            e.printStackTrace();
         }
     }
 
@@ -66,7 +66,7 @@ public class Encryption {
             fileText = Files.readAllBytes(Paths.get(filename));
 
         } catch(IOException e) {
-            System.out.println(e.getMessage());
+            e.printStackTrace();
             return;
         }
 
@@ -85,7 +85,7 @@ public class Encryption {
             connection.close();
 
         } catch(SQLException e) {
-            System.out.println(e.getMessage());
+            e.printStackTrace();
             return;
         }
 
@@ -115,18 +115,8 @@ public class Encryption {
             Note note = new Note(filename, new String(finalMessage));
             note.upload();
 
-            /*try {
-                String newFilename = String.format("%s.enc", filename);
-                Path path = Paths.get(newFilename);
-                Files.createFile(path);
-                Files.write(path, finalMessage);
-
-            } catch(IOException e) {
-                System.out.println(e.getMessage());
-            }*/
-
         } catch(Exception e) {
-            System.out.println(e.getMessage());
+            e.printStackTrace();
         }
     }
 
@@ -164,7 +154,7 @@ public class Encryption {
             keyNotePair.getValue().setNote(new String(decryptedMessage));
 
         } catch(Exception e) {
-            System.out.println(e.getMessage());
+            e.printStackTrace();
         }
 
         try {
@@ -172,7 +162,7 @@ public class Encryption {
             Files.write(Paths.get(title), keyNotePair.getValue().getNote().getBytes());
 
         } catch(IOException e) {
-            System.out.println(e.getMessage());
+            e.printStackTrace();
         }
     }
 
@@ -211,7 +201,7 @@ public class Encryption {
             keyNotePair.getValue().update();
 
         } catch(Exception e) {
-            System.out.println(e.getMessage());
+            e.printStackTrace();
         }
     }
 
@@ -251,7 +241,7 @@ public class Encryption {
             keyNotePair.getValue().update();
 
         } catch(Exception e) {
-            System.out.println(e.getMessage());
+            e.printStackTrace();
         }
     }
 }

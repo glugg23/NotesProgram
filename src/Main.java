@@ -83,7 +83,7 @@ public class Main {
                                     Encryption.decryptAndSaveNote(encryptedTitle);
 
                                 } catch(IllegalArgumentException e) {
-                                    System.out.println(e.getMessage());
+                                    e.printStackTrace();
                                 }
                                 break;
                             case 4:
@@ -99,7 +99,7 @@ public class Main {
                                     Encryption.decryptNote(encryptedNoteTitle);
 
                                 } catch(IllegalArgumentException e) {
-                                    System.out.println(e.getMessage());
+                                    e.printStackTrace();
                                 }
                                 break;
                             case 0:
