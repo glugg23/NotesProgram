@@ -1,5 +1,6 @@
 db/
 META-INF/
+log.txt
 
 # Created by https://www.gitignore.io/api/java,macos,intellij+all
 

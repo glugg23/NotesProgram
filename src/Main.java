@@ -16,18 +16,45 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import java.io.IOException;
 import java.util.Optional;
 import java.util.Scanner;
+import java.util.logging.FileHandler;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import java.util.logging.SimpleFormatter;
 
 public class Main {
+    private static final Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
+
     public static void main(String[] args) {
+        try {
+            FileHandler fileHandler = new FileHandler("log.txt");
+            fileHandler.setFormatter(new SimpleFormatter());
+            LOGGER.addHandler(fileHandler);
+
+            //Log all messages
+            //TODO Allow fine tuning of logging frequency
+            LOGGER.setLevel(Level.ALL);
+
+        } catch(IOException e) {
+            e.printStackTrace();
+        }
+
+        //This fails when running in an IDE, so for now this will not end the program early
+        if(System.console() == null) {
+            LOGGER.log(Level.SEVERE, "This program needs to be run from the command line.");
+            //TODO Uncomment this when building final .jar
+            //return;
+        }
+
         SQL.initialSetup();
 
         Scanner in = new Scanner(System.in);
         int mainMenuChoice;
 
         do {
-            System.out.println("Notes Program V0.1\n" +
+            System.out.println("NotesProgram Copyright (C) 2018 Max Leonhardt\n" +
                     "Menu\n" +
                     "\t1 - Enter note\n" +
                     "\t2 - Show all notes\n" +
