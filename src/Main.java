@@ -48,6 +48,8 @@ public class Main {
             //return;
         }
 
+        LOGGER.log(Level.INFO, "Starts running.");
+
         SQL.initialSetup();
 
         Scanner in = new Scanner(System.in);
@@ -75,7 +77,9 @@ public class Main {
             switch(mainMenuChoice) {
                 case 1:
                     TextEditor ed = new TextEditor();
+                    LOGGER.log(Level.INFO, "Entering text editor");
                     ed.use();
+                    LOGGER.log(Level.INFO, "Exiting text editor");
                     break;
                 case 2:
                     SQL.showAllNotes();
@@ -128,6 +132,7 @@ public class Main {
                                     Encryption.decryptAndSaveNote(encryptedTitle);
 
                                 } catch(IllegalArgumentException e) {
+                                    LOGGER.log(Level.WARNING, e.toString(), e);
                                     e.printStackTrace();
                                 }
                                 break;
@@ -144,6 +149,7 @@ public class Main {
                                     Encryption.decryptNote(encryptedNoteTitle);
 
                                 } catch(IllegalArgumentException e) {
+                                    LOGGER.log(Level.WARNING, e.toString(), e);
                                     e.printStackTrace();
                                 }
                                 break;
@@ -168,5 +174,8 @@ public class Main {
         } while(mainMenuChoice != 0);
 
         in.close();
+
+        LOGGER.log(Level.INFO, "Ends running.");
+        //TODO Add code here to delete log file if there are no warnings that are WARNING/SEVERE
     }
 }

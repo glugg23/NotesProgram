@@ -19,8 +19,12 @@
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class Note {
+    private static final Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
+
     private String title;
     private String note = "";
 
@@ -79,6 +83,7 @@ public class Note {
             pstmnt.execute();
 
         } catch(SQLException e) {
+            LOGGER.log(Level.WARNING, e.toString(), e);
             e.printStackTrace();
         }
     }
@@ -98,6 +103,7 @@ public class Note {
             pstmnt.execute();
 
         } catch(SQLException e) {
+            LOGGER.log(Level.WARNING, e.toString(), e);
             e.printStackTrace();
         }
     }

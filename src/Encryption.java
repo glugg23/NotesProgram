@@ -33,10 +33,12 @@ import java.sql.*;
 import java.time.Instant;
 import java.util.Base64;
 import java.util.Optional;
-
-//import java.nio.file.Path;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class Encryption {
+    private static final Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
+
     /**
      * Generates a new key for encryption
      * @return A Base64 encoded 128bit AES key, or Nothing if something went wrong
@@ -53,6 +55,7 @@ public class Encryption {
             return Optional.of(encodedBytes);
 
         } catch(NoSuchAlgorithmException e) {
+            LOGGER.log(Level.WARNING, e.toString(), e);
             e.printStackTrace();
         }
         return Optional.empty();
@@ -72,6 +75,7 @@ public class Encryption {
             pstmnt.execute();
 
         } catch(SQLException e) {
+            LOGGER.log(Level.WARNING, e.toString(), e);
             e.printStackTrace();
         }
     }
@@ -84,6 +88,7 @@ public class Encryption {
             fileText = Files.readAllBytes(Paths.get(filename));
 
         } catch(IOException e) {
+            LOGGER.log(Level.WARNING, e.toString(), e);
             e.printStackTrace();
             return;
         }
@@ -103,6 +108,7 @@ public class Encryption {
             connection.close();
 
         } catch(SQLException e) {
+            LOGGER.log(Level.WARNING, e.toString(), e);
             e.printStackTrace();
             return;
         }
@@ -134,6 +140,7 @@ public class Encryption {
             note.upload();
 
         } catch(Exception e) {
+            LOGGER.log(Level.WARNING, e.toString(), e);
             e.printStackTrace();
         }
     }
@@ -148,7 +155,7 @@ public class Encryption {
 
         } else {
             //TODO Handle failure to find key
-            System.out.println("ERROR: Note not found");
+            LOGGER.log(Level.SEVERE, "Failure to find encryption key");
             return;
         }
 
@@ -172,6 +179,7 @@ public class Encryption {
             keyNotePair.getValue().setNote(new String(decryptedMessage));
 
         } catch(Exception e) {
+            LOGGER.log(Level.WARNING, e.toString(), e);
             e.printStackTrace();
         }
 
@@ -180,6 +188,7 @@ public class Encryption {
             Files.write(Paths.get(title), keyNotePair.getValue().getNote().getBytes());
 
         } catch(IOException e) {
+            LOGGER.log(Level.WARNING, e.toString(), e);
             e.printStackTrace();
         }
     }
@@ -194,7 +203,7 @@ public class Encryption {
 
         } else {
             //TODO Handle failure to find key
-            System.out.println("ERROR: Note not found");
+            LOGGER.log(Level.SEVERE, "Failure to find encryption key");
             return;
         }
 
@@ -219,6 +228,7 @@ public class Encryption {
             keyNotePair.getValue().update();
 
         } catch(Exception e) {
+            LOGGER.log(Level.WARNING, e.toString(), e);
             e.printStackTrace();
         }
     }
@@ -233,7 +243,7 @@ public class Encryption {
 
         } else {
             //TODO Handle failure to find key
-            System.out.println("ERROR: Note not found");
+            LOGGER.log(Level.SEVERE, "Failure to find encryption key");
             return;
         }
 
@@ -259,6 +269,7 @@ public class Encryption {
             keyNotePair.getValue().update();
 
         } catch(Exception e) {
+            LOGGER.log(Level.WARNING, e.toString(), e);
             e.printStackTrace();
         }
     }

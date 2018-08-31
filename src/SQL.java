@@ -25,8 +25,12 @@ import java.nio.file.Paths;
 import java.sql.*;
 import java.util.Base64;
 import java.util.Optional;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class SQL {
+    private static final Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
+
     /**
      * Creates a connect to the database
      * @return A valid connect to the database
@@ -39,6 +43,7 @@ public class SQL {
             connection = DriverManager.getConnection(url);
 
         } catch(SQLException e) {
+            LOGGER.log(Level.SEVERE, e.toString(), e);
             e.printStackTrace();
         }
 
@@ -79,6 +84,7 @@ public class SQL {
             statement.executeBatch();
 
         } catch(SQLException e) {
+            LOGGER.log(Level.SEVERE, "Failure to create initial database\n" + e.toString(), e);
             e.printStackTrace();
         }
     }
@@ -114,6 +120,7 @@ public class SQL {
             }
 
         } catch(SQLException e) {
+            LOGGER.log(Level.WARNING, e.toString(), e);
             e.printStackTrace();
 
         } finally {
@@ -123,6 +130,7 @@ public class SQL {
                 }
 
             } catch(SQLException e) {
+                LOGGER.log(Level.WARNING, e.toString(), e);
                 e.printStackTrace();
             }
         }
@@ -159,6 +167,7 @@ public class SQL {
                     Files.write(path, notes.getString("content").getBytes());
 
                 } catch(IOException e) {
+                    LOGGER.log(Level.WARNING, e.toString(), e);
                     e.printStackTrace();
                 }
 
@@ -175,12 +184,14 @@ public class SQL {
                         Files.write(path, notes.getString("content").getBytes());
 
                     } catch(IOException e) {
+                        LOGGER.log(Level.WARNING, e.toString(), e);
                         e.printStackTrace();
                     }
                 }
             }
 
         } catch(SQLException e) {
+            LOGGER.log(Level.WARNING, e.toString(), e);
             e.printStackTrace();
 
         } finally {
@@ -190,6 +201,7 @@ public class SQL {
                 }
 
             } catch(SQLException e) {
+                LOGGER.log(Level.WARNING, e.toString(), e);
                 e.printStackTrace();
             }
         }
@@ -209,6 +221,7 @@ public class SQL {
             note.upload();
 
         } catch(IOException e) {
+            LOGGER.log(Level.WARNING, e.toString(), e);
             e.printStackTrace();
         }
     }
@@ -241,6 +254,7 @@ public class SQL {
             return Optional.of(pair);
 
         } catch(SQLException e) {
+            LOGGER.log(Level.WARNING, e.toString(), e);
             e.printStackTrace();
 
         } finally {
@@ -250,6 +264,7 @@ public class SQL {
                 }
 
             } catch(SQLException e) {
+                LOGGER.log(Level.WARNING, e.toString(), e);
                 e.printStackTrace();
             }
         }
