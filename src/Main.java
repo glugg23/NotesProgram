@@ -43,12 +43,12 @@ public class Main {
 
         //This fails when running in an IDE, so for now this will not end the program early
         if(System.console() == null) {
-            LOGGER.log(Level.SEVERE, "This program needs to be run from the command line.");
+            LOGGER.log(Level.SEVERE, "This program needs to be run from the command line");
             //TODO Uncomment this when building final .jar
             //return;
         }
 
-        LOGGER.log(Level.INFO, "Starts running.");
+        LOGGER.log(Level.FINEST, "Starts running");
 
         SQL.initialSetup();
 
@@ -77,9 +77,9 @@ public class Main {
             switch(mainMenuChoice) {
                 case 1:
                     TextEditor ed = new TextEditor();
-                    LOGGER.log(Level.INFO, "Entering text editor");
+                    LOGGER.log(Level.FINEST, "Entering text editor");
                     ed.use();
-                    LOGGER.log(Level.INFO, "Exiting text editor");
+                    LOGGER.log(Level.FINEST, "Exiting text editor");
                     break;
                 case 2:
                     SQL.showAllNotes();
@@ -175,7 +175,7 @@ public class Main {
 
         in.close();
 
-        LOGGER.log(Level.INFO, "Ends running.");
+        LOGGER.log(Level.FINEST, "Ends running");
         //TODO Add code here to delete log file if there are no warnings that are WARNING/SEVERE
     }
 }

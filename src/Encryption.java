@@ -52,6 +52,8 @@ public class Encryption {
             SecretKey secretKey = new SecretKeySpec(key, "AES");
             byte[] encodedBytes = Base64.getEncoder().encode(secretKey.getEncoded());
 
+            LOGGER.log(Level.FINEST, "New key generated");
+
             return Optional.of(encodedBytes);
 
         } catch(NoSuchAlgorithmException e) {
@@ -73,6 +75,8 @@ public class Encryption {
             pstmnt.setString(1, new String(key));
             pstmnt.setTimestamp(2, Timestamp.from(Instant.now()));
             pstmnt.execute();
+
+            LOGGER.log(Level.FINEST, "New key added to database");
 
         } catch(SQLException e) {
             LOGGER.log(Level.WARNING, e.toString(), e);

@@ -82,6 +82,9 @@ public class Note {
 
             pstmnt.execute();
 
+            String log = String.format("Note '%s' uploaded to database", this.title);
+            LOGGER.log(Level.FINEST, log);
+
         } catch(SQLException e) {
             LOGGER.log(Level.WARNING, e.toString(), e);
             e.printStackTrace();
@@ -101,6 +104,9 @@ public class Note {
             pstmnt.setString(2, this.title);
 
             pstmnt.execute();
+
+            String log = String.format("Note '%s' updated in database", this.title);
+            LOGGER.log(Level.FINEST, log);
 
         } catch(SQLException e) {
             LOGGER.log(Level.WARNING, e.toString(), e);
