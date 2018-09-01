@@ -272,7 +272,7 @@ public class TextEditor {
             }
 
         //Otherwise check the command and see if it is valid
-        } else if(command.length() < 3 || command.charAt(1) != ' ') {
+        } else if(command.length() < 2) {
             this.errorMessage = "Incorrect command format";
             System.out.println("?");
             if(this.helpMode) {
@@ -280,7 +280,7 @@ public class TextEditor {
             }
 
         } else {
-            this.filename = command.substring(2);
+            this.filename = command.substring(1);
             Note note = new Note(this.filename);
 
             for(String line : this.buffer) {
